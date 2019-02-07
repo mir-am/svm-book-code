@@ -27,6 +27,18 @@ def OR_dataset():
     return X, y    
 
 
+def XOR_dataset():
+    
+    """
+    Returns training samples and corresponding lables for the XOR dataset
+    """
+
+    X = np.array([[1, 1], [1, 0], [0, 1], [0, 0]])
+    y = np.array([0, 1, 1, 0])
+
+    return X, y 
+
+
 def plot_dataset(X, y, plot_name):
     
     """
@@ -71,5 +83,6 @@ def plot_dataset(X, y, plot_name):
 
 if __name__ == '__main__':
     
-    X, y = OR_dataset()
-    plot_dataset(X, y, 'OR-problem')
+    #X, y = OR_dataset()
+    X, y = XOR_dataset()
+    plot_dataset(X, y, 'XOR-problem')
