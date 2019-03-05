@@ -10,6 +10,7 @@ This module contains code for plotting datasets, hyperplanes, and decision bound
 
 import numpy as np
 import matplotlib.pyplot as plt
+import itertools
 from os.path import join
 
 # Height and width of a plot
@@ -67,6 +68,47 @@ def make_dataset(X_1, y_1, X_2, y_2):
     y = np.hstack((y_1, y_2))
     
     return X, y
+
+def make_data_VC(plot_name):
+    
+    """
+    It makes a 2-d dataset with 3 samples for showing VC dimension of the
+    Perceptron.
+    """
+    
+    #X = np.array([[2, 3], [1, 1], [3, 1]])
+    X = np.array([[2, 1], [1, 3], [3, 3]])
+    
+    # Generate all combinations of labels for the data set which is 2^3
+    comb_lables = np.array([list(i) for i in itertools.product([-1, 1],
+                            repeat=3)])
+    
+    fig = plt.figure()
+    fig.subplots_adjust(hspace=0.07, wspace=0.1)
+    
+    for i in range(1, comb_lables.shape[0] + 1):
+        
+        ax = fig.add_subplot(2, 4, i)
+        
+        
+        X_c1 = X[comb_lables[i - 1] == 1]
+        X_c2 = X[comb_lables[i - 1] == -1]
+        
+        plt.scatter(X_c1[:, 0], X_c1[:, 1], marker='^', color='blue', s=(50,))
+        plt.scatter(X_c2[:, 0], X_c2[:, 1], marker='o', color='red',  s=(50,))
+        
+        x_range = ax.get_xlim()
+        y_range = ax.get_ylim()
+    
+        plt.xticks(np.arange(int(x_range[0]), int(x_range[1]) + 2, step=1))
+        plt.yticks(np.arange(int(y_range[0]), int(y_range[1]) + 2, step=1))
+        
+        # No numbers on either axes
+        ax.get_yaxis().set_ticks([])
+        ax.get_xaxis().set_ticks([])
+        
+    
+    fig.savefig(join('./figs/', plot_name + '.png'), format='png', dpi=500)
     
 def plot_dataset(X, y, plot_name):
     
@@ -112,14 +154,16 @@ def plot_dataset(X, y, plot_name):
 
 if __name__ == '__main__':
     
-    # Cov matrices
-    c1_cov = np.array([[1, 0], [0, 1]])
-    c2_cov = np.array([[0.5, 0], [0, 0.5]])
+#    # Cov matrices
+#    c1_cov = np.array([[1, 0], [0, 1]])
+#    c2_cov = np.array([[0.5, 0], [0, 0.5]])
+#    
+#    # Mean vectors
+#    c1_mean = np.array([3, 3])
+#    c2_mean = np.array([0, 0])
+#    
+#    X_1, y_1, X_2, y_2 = norm_dataset(c1_cov, c1_mean, c2_cov, c2_mean, 20, 20)
+#    X, y = make_dataset(X_1, y_1, X_2, y_2)
+#    plot_dataset(X, y, 'LinearDataset')
     
-    # Mean vectors
-    c1_mean = np.array([3, 3])
-    c2_mean = np.array([0, 0])
-    
-    X_1, y_1, X_2, y_2 = norm_dataset(c1_cov, c1_mean, c2_cov, c2_mean, 20, 20)
-    X, y = make_dataset(X_1, y_1, X_2, y_2)
-    plot_dataset(X, y, 'LinearDataset')
+    make_data_VC('VC-Perceptron')
