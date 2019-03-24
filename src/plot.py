@@ -12,9 +12,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 import itertools
 from os.path import join
+from scipy.interpolate import make_interp_spline, BSpline
 
 # Height and width of a plot
-#plt.rcParams["figure.figsize"] = [3, 3]
+plt.rcParams["figure.figsize"] = [3, 3]
 
 
 def OR_dataset():
@@ -151,6 +152,55 @@ def plot_dataset(X, y, plot_name):
         fig.savefig(join('./figs/', plot_name + '.png'), format='png', dpi=500)
 
 
+def plot_quadratic(plot_name):
+    
+    """
+    It plots a quadratic function
+    """
+    
+    fig = plt.figure()
+    ax = fig.add_subplot(1, 1, 1)
+    
+    #  move left y-axis to center
+    ax.spines['left'].set_position('center')
+    #ax.spines['bottom'].set_position('center')
+    
+    # Eliminate upper and right axes
+    ax.spines['right'].set_color('none')
+    ax.spines['top'].set_color('none')
+    
+    x = [-3, -2, -1, 0, 1, 2, 3]
+    y = [i**2 for i in x]
+    
+    # Creating smooth curve
+    xnew = np.linspace(min(x), max(x), 300)
+    spl = make_interp_spline(x, y, k=3)
+    smooth_y = spl(xnew)
+    
+    plt.plot(xnew, smooth_y, color='black')
+    
+    # Plot constraint
+    #plt.axvline(2, color='k', linestyle='dashed')
+    
+    # plot min point
+    #plt.plot([0], [0], marker='o', color='k')
+    
+    # range of x and y axis
+    x_range = ax.get_xlim()
+    y_range = ax.get_ylim()
+
+    plt.xticks(np.arange(int(x_range[0]), int(x_range[1]) + 1, step=1))
+    plt.yticks(np.arange(int(y_range[0]) + 1, int(y_range[1]) + 1, step=1))
+    
+    # axis major lines
+    ax.xaxis.grid(which='major', linestyle='--')
+    ax.yaxis.grid(which='major', linestyle='--')
+    
+    # Set margin to zero to make y-axis connected to x-axis
+    plt.margins(0)
+    plt.show()
+
+    fig.savefig(join('./figs/', plot_name + '.png'), format='png', dpi=500)
 
 if __name__ == '__main__':
     
@@ -166,4 +216,6 @@ if __name__ == '__main__':
 #    X, y = make_dataset(X_1, y_1, X_2, y_2)
 #    plot_dataset(X, y, 'LinearDataset')
     
-    make_data_VC('VC-Perceptron')
+    #make_data_VC('VC-Perceptron')
+    
+    plot_quadratic('quadratic')
