@@ -9,12 +9,13 @@ This module contains code for plotting datasets, hyperplanes, and decision bound
 """
 
 import numpy as np
+import pandas as pd
 import matplotlib.pyplot as plt
 import itertools
 from os.path import join
 
 # Height and width of a plot
-#plt.rcParams["figure.figsize"] = [3, 3]
+plt.rcParams["figure.figsize"] = [3, 3]
 
 
 def OR_dataset():
@@ -58,6 +59,7 @@ def norm_dataset(cov_mat_c1, mean_vec_c1, cov_mat_c2, mean_vec_c2,
     
     return X_1, y_1, X_2, y_2
 
+
 def make_dataset(X_1, y_1, X_2, y_2):
     
     """
@@ -68,6 +70,16 @@ def make_dataset(X_1, y_1, X_2, y_2):
     y = np.hstack((y_1, y_2))
     
     return X, y
+
+
+def save_dataset(X, y, path):
+    """
+    It saves dataset into a CSV file.
+    """
+    
+    df = pd.DataFrame(np.hstack((y.reshape(X.shape[0], 1), X)))
+    df.to_csv(path, index=False, header=False)
+      
 
 def make_data_VC(plot_name):
     
@@ -145,8 +157,10 @@ def plot_dataset(X, y, plot_name):
     plt.show()
     
     print("Wanna save?... yes -> 1")
+    
+    choice = int(input())
         
-    if input() == '1':
+    if choice:
     
         fig.savefig(join('./figs/', plot_name + '.png'), format='png', dpi=500)
 
@@ -154,16 +168,21 @@ def plot_dataset(X, y, plot_name):
 
 if __name__ == '__main__':
     
-#    # Cov matrices
-#    c1_cov = np.array([[1, 0], [0, 1]])
-#    c2_cov = np.array([[0.5, 0], [0, 0.5]])
-#    
-#    # Mean vectors
-#    c1_mean = np.array([3, 3])
-#    c2_mean = np.array([0, 0])
-#    
-#    X_1, y_1, X_2, y_2 = norm_dataset(c1_cov, c1_mean, c2_cov, c2_mean, 20, 20)
-#    X, y = make_dataset(X_1, y_1, X_2, y_2)
-#    plot_dataset(X, y, 'LinearDataset')
+    # Cov matrices
+    c1_cov = np.array([[0, 0.1], [0.1, 0]])
+    c2_cov = np.array([[0, 0.1], [0.1, 0]])
     
-    make_data_VC('VC-Perceptron')
+    # Mean vectors
+    c1_mean = np.array([2, 2])
+    c2_mean = np.array([0, 0])
+    
+    X_1, y_1, X_2, y_2 = norm_dataset(c1_cov, c1_mean, c2_cov, c2_mean, 8, 8)
+    X, y = make_dataset(X_1, y_1, X_2, y_2)
+    save = plot_dataset(X, y, 'LinearDataset')
+        
+    if save:
+        
+        save_dataset(X, y, './2d-linear-data.csv')
+        
+    
+    #make_data_VC('VC-Perceptron')
