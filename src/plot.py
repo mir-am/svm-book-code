@@ -215,24 +215,71 @@ def plot_quadratic(plot_name):
     plt.show()
 
     fig.savefig(join('./figs/', plot_name + '.png'), format='png', dpi=500)
+    
+def gen_data(n_samples):
+    """
+    Generating artificial dataset manually.
+    """
+    
+    # Empty plot for manually generate data
+    plt.plot()
+    
+    # Set Axis limit
+    plt.ylim([0, 3])
+    plt.xlim([0, 3])
+    
+    # Ginput for generating class 1 data
+    c1_in = plt.ginput(n=n_samples, timeout=0, mouse_stop=2)
+    
+    # Convert to numpy array
+    c1_data = np.asarray(c1_in)
+    
+    plt.scatter(c1_data[:, 0], c1_data[:, 1])
+    plt.show()
+    
+    c2_in = plt.ginput(n=n_samples, timeout=0, mouse_stop=2)
+    
+    c2_data = np.asarray(c2_in)
+    
+    # Plot class 1  and -1 data points
+    
+    plt.scatter(c2_data[:, 0], c2_data[:, 1])
+    plt.show()
+    
+    # Merge two classes
+    X = np.row_stack((c1_data, c2_data))
+    
+    # Label of classes
+    c1_label = np.ones((c1_data.shape[0], 1), dtype=np.int) # class 1 label
+    
+    c2_label = np.zeros((c2_data.shape[0], 1), dtype=np.int) # Class 2 label
+    c2_label.fill(-1)
+    
+    # Merge lables
+    y = np.row_stack((c1_label, c2_label)) 
+    
+    return X, y
+    
 
 if __name__ == '__main__':
     
-    # Cov matrices
-    c1_cov = np.array([[0, 0.1], [0.1, 0]])
-    c2_cov = np.array([[0, 0.1], [0.1, 0]])
+#    # Cov matrices
+#    c1_cov = np.array([[0, 0.2], [0.2, 0]])
+#    c2_cov = np.array([[0, 0.2], [0.2, 0]])
+#    
+#    # Mean vectors
+#    c1_mean = np.array([2, -1])
+#    c2_mean = np.array([-0.5, 2])
+#    
+#    X_1, y_1, X_2, y_2 = norm_dataset(c1_cov, c1_mean, c2_cov, c2_mean, 8, 8)
+#    X, y = make_dataset(X_1, y_1, X_2, y_2)
+#    save = plot_dataset(X, y, 'LinearDataset3')
+#        
+#    if save:
+#        
+#        save_dataset(X, y, './2d-linear-data.csv')
     
-    # Mean vectors
-    c1_mean = np.array([2, 2])
-    c2_mean = np.array([0, 0])
-    
-    X_1, y_1, X_2, y_2 = norm_dataset(c1_cov, c1_mean, c2_cov, c2_mean, 8, 8)
-    X, y = make_dataset(X_1, y_1, X_2, y_2)
-    save = plot_dataset(X, y, 'LinearDataset')
-        
-    if save:
-        
-        save_dataset(X, y, './2d-linear-data.csv')
-        
+    X, y = gen_data(10)
+    save_dataset(X, y, './soft-margin-data.csv')    
     
     #plot_quadratic('quadratic')
