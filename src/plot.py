@@ -216,6 +216,19 @@ def plot_quadratic(plot_name):
 
     fig.savefig(join('./figs/', plot_name + '.png'), format='png', dpi=500)
     
+def read_data(filename):
+    """
+    It converts a CSV dataset to NumPy arrays.
+    """
+    
+    df = pd.read_csv(filename)
+    y = df.iloc[:, 0].values
+    df.drop(df.columns[0], axis=1, inplace=True)
+    X = df.values
+    
+    return X, y
+    
+    
 def gen_data(n_samples):
     """
     Generating artificial dataset manually.
@@ -263,6 +276,8 @@ def gen_data(n_samples):
 
 if __name__ == '__main__':
     
+    X, y = read_data('./soft-margin-data.csv')  
+    
 #    # Cov matrices
 #    c1_cov = np.array([[0, 0.2], [0.2, 0]])
 #    c2_cov = np.array([[0, 0.2], [0.2, 0]])
@@ -273,13 +288,17 @@ if __name__ == '__main__':
 #    
 #    X_1, y_1, X_2, y_2 = norm_dataset(c1_cov, c1_mean, c2_cov, c2_mean, 8, 8)
 #    X, y = make_dataset(X_1, y_1, X_2, y_2)
-#    save = plot_dataset(X, y, 'LinearDataset3')
-#        
+    
+    save = plot_dataset(X, y, 'soft-margin-data')
+        
 #    if save:
 #        
 #        save_dataset(X, y, './2d-linear-data.csv')
     
-    X, y = gen_data(10)
-    save_dataset(X, y, './soft-margin-data.csv')    
+#    X, y = gen_data(10)
+#    save_dataset(X, y, './soft-margin-data.csv')
+
+  
+
     
     #plot_quadratic('quadratic')
