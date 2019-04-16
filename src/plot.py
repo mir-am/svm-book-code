@@ -14,6 +14,8 @@ import matplotlib.pyplot as plt
 import itertools
 from os.path import join
 from scipy.interpolate import make_interp_spline, BSpline
+from mpl_toolkits.mplot3d import Axes3D
+
 
 # Height and width of a plot
 plt.rcParams["figure.figsize"] = [3, 3]
@@ -151,8 +153,8 @@ def plot_dataset(X, y, plot_name):
     
     plt.ylabel(r'$x_{2}$')
     plt.xlabel(r'$x_{1}$')
-    plt.xticks(np.arange(int(x_range[0]), int(x_range[1]) + 1, step=1))
-    plt.yticks(np.arange(int(y_range[0]), int(y_range[1]) + 1, step=1))
+    plt.xticks(np.arange(int(x_range[0]) + 1, int(x_range[1]) + 1, step=1))
+    plt.yticks(np.arange(int(y_range[0]) + 1, int(y_range[1]) + 1, step=1))
     
     plt.tight_layout() # To fix axis labels not shown completely in the fig
     plt.show()
@@ -164,6 +166,35 @@ def plot_dataset(X, y, plot_name):
     if choice:
     
         fig.savefig(join('./figs/', plot_name + '.png'), format='png', dpi=500)
+
+
+def plot_3d_data(X, y, fig_name):
+    """
+    It plots a 3d-dimensional dataset.
+    """
+    
+    fig = plt.figure()
+    ax = Axes3D(fig)
+    
+    # Split training points into separate classes
+    X_c1 = X[y == 1]
+    X_c2 = X[y == -1]
+    
+    ax.scatter(X_c1[:, 0], X_c1[:, 1], X_c1[:, 2], marker='^', color='blue',
+               s=(50,))
+    ax.scatter(X_c2[:, 0], X_c2[:, 1], X_c2[:, 2], marker='o', color='red',
+               s=(50,))
+    
+    ax.set_xlabel(r'$x_{1}$', rotation=0)
+    ax.set_ylabel(r'$x_{2}$', rotation=0)
+    ax.set_zlabel(r'$x_{3}$', rotation=0)
+    
+    ax.set_yticks(np.arange(int(ax.get_ylim()[0]) , int(ax.get_ylim()[1] + 1),
+                            step=44))
+    
+    plt.show()
+    
+    fig.savefig(join('./figs/', fig_name + '.png'), format='png', dpi=500)
 
 
 def plot_quadratic(plot_name):
@@ -238,8 +269,8 @@ def gen_data(n_samples):
     plt.plot()
     
     # Set Axis limit
-    plt.ylim([0, 3])
-    plt.xlim([0, 3])
+    plt.ylim([-8, 8])
+    plt.xlim([-8, 8])
     
     # Ginput for generating class 1 data
     c1_in = plt.ginput(n=n_samples, timeout=0, mouse_stop=2)
@@ -274,9 +305,25 @@ def gen_data(n_samples):
     return X, y
     
 
+def transform_2d_to_3d(X):
+    """
+    It transform a 2-d data to 3-d dimensional space.
+    """
+    
+    X_3d = np.zeros((X.shape[0], 3), dtype=np.float)
+    
+    for i in range(X.shape[0]):
+        
+        X_3d[i, 0] = X[i, 0] ** 2
+        X_3d[i, 1] = np.sqrt(2) * X[i, 0] * X[i, 1]
+        X_3d[i, 2] = X[i, 1] ** 2
+        
+    return X_3d
+    
+
 if __name__ == '__main__':
     
-    X, y = read_data('./soft-margin-data.csv')  
+     
     
 #    # Cov matrices
 #    c1_cov = np.array([[0, 0.2], [0.2, 0]])
@@ -289,16 +336,19 @@ if __name__ == '__main__':
 #    X_1, y_1, X_2, y_2 = norm_dataset(c1_cov, c1_mean, c2_cov, c2_mean, 8, 8)
 #    X, y = make_dataset(X_1, y_1, X_2, y_2)
     
-    save = plot_dataset(X, y, 'soft-margin-data')
+    #save = plot_dataset(X, y, 'non-linear-data')
         
 #    if save:
 #        
 #        save_dataset(X, y, './2d-linear-data.csv')
     
-#    X, y = gen_data(10)
-#    save_dataset(X, y, './soft-margin-data.csv')
+#    X, y = gen_data(15)
+#    save_dataset(X, y, './dataset/non-linear-data1.csv')
 
-  
+    X, y = read_data('./dataset/non-linear-data1.csv') 
+    
+    X_3d = transform_2d_to_3d(X)
+    plot_3d_data(X_3d, y.astype('int'), '2d-3d-tansform')
 
     
     #plot_quadratic('quadratic')
