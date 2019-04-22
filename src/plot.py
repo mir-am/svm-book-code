@@ -319,6 +319,56 @@ def transform_2d_to_3d(X):
         X_3d[i, 2] = X[i, 1] ** 2
         
     return X_3d
+
+def plot_func(plot_name, func):
+    """
+    It plots a single variable function.
+    """
+    
+    fig = plt.figure()
+    ax = fig.add_subplot(1, 1, 1)
+    
+
+    # Eliminate upper and right axes
+    ax.spines['right'].set_color('none')
+    ax.spines['top'].set_color('none')
+    
+    x = [-2, -1.5, -1, 0, 1, 1.5, 2]
+    y = [func(i) for i in x]
+    
+    # Creating smooth curve
+    xnew = np.linspace(min(x), max(x), 300)
+    spl = make_interp_spline(x, y, k=3)
+    smooth_y = spl(xnew)
+    
+    plt.plot(xnew, smooth_y, color='black')
+    
+    # Plot constraint
+    #plt.axvline(2, color='k', linestyle='dashed')
+    
+    # plot min point
+    #plt.plot([0], [0], marker='o', color='k')
+    
+    # range of x and y axis
+    x_range = ax.get_xlim()
+    y_range = ax.get_ylim()
+
+    plt.xticks(np.arange(int(x_range[0]), int(x_range[1]) + 1, step=1))
+    plt.yticks(np.arange(0, int(y_range[1]) + 1, step=1))
+    
+    # axis major lines
+    ax.xaxis.grid(which='major', linestyle='--')
+    ax.yaxis.grid(which='major', linestyle='--')
+    
+    plt.ylabel(r'$f(x)$')
+    plt.xlabel(r'$x$')
+    
+    # Set margin to zero to make y-axis connected to x-axis
+    #plt.margins(0)
+    plt.tight_layout() # To fix axis labels not shown completely in the fig
+    plt.show()
+
+    fig.savefig(join('./figs/', plot_name + '.png'), format='png', dpi=500)
     
 
 if __name__ == '__main__':
@@ -345,10 +395,15 @@ if __name__ == '__main__':
 #    X, y = gen_data(15)
 #    save_dataset(X, y, './dataset/non-linear-data1.csv')
 
-    X, y = read_data('./dataset/non-linear-data1.csv') 
-    
-    X_3d = transform_2d_to_3d(X)
-    plot_3d_data(X_3d, y.astype('int'), '2d-3d-tansform')
+#    X, y = read_data('./dataset/non-linear-data1.csv') 
+#    
+#    X_3d = transform_2d_to_3d(X)
+#    plot_3d_data(X_3d, y.astype('int'), '2d-3d-tansform')
 
     
-    #plot_quadratic('quadratic')
+    #plot_quadratic('quadratic1')
+    # lambda i :  i**6 + i**4 + i**2 + 2
+    # lambda i :  i**2
+    
+    plot_func('weak-convex-func', lambda i : i**2 + 2)
+    
