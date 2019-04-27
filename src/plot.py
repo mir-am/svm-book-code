@@ -15,6 +15,7 @@ import itertools
 from os.path import join
 from scipy.interpolate import make_interp_spline, BSpline
 from mpl_toolkits.mplot3d import Axes3D
+from sklearn.svm import SVC
 
 
 # Height and width of a plot
@@ -370,6 +371,71 @@ def plot_func(plot_name, func):
 
     fig.savefig(join('./figs/', plot_name + '.png'), format='png', dpi=500)
     
+    
+
+def make_mesh(x, y, h=0.002):
+    """
+    Creates a mesh grid of points
+    """
+    
+    step = 0.5
+    
+    x_min, x_max = x.min() - step, x.max() + step
+    y_min, y_max = y.min() - step, y.max() + step
+    
+    xx, yy = np.meshgrid(np.arange(x_min, x_max, h), np.arange(y_min, y_max, h))
+    
+    return xx, yy
+    
+    
+def SVM_kernel_plot(X, y, fig_name):
+    
+    # mesh grid
+    xx, yy = make_mesh(X[:, 0], X[:, 1])
+    
+    # Datapoints in inputspace
+    data_points = np.c_[xx.ravel(), yy.ravel()]
+    
+    svm_model = SVC(kernel='poly', degree=1)
+    svm_model.fit(X, y)
+    
+    # Predict class of data points
+    z = svm_model.predict(data_points)
+    print(z.shape)
+    
+    z = z.reshape(xx.shape)
+    
+    fig = plt.figure(1)
+    
+    axes = plt.gca()
+        
+    # plot decision boundary
+    plt.contourf(xx, yy, z, levels=[-1, 0], colors='dimgray', alpha=0.8)
+    
+    # Split training points into separate classes
+    X_c1 = X[y == 1]
+    X_c2 = X[y == -1]
+    
+    # plot training samples of both classes
+    plt.scatter(X_c1[:, 0], X_c1[:, 1], marker='^', s=(50,), c='b', cmap=plt.cm.coolwarm)
+    plt.scatter(X_c2[:, 0], X_c2[:, 1], marker='o', s=(50,), c='r', cmap=plt.cm.coolwarm)
+    #plt.scatter(X[:, 0], X[:, 1], marker='o', s=(50,), c=y, cmap=plt.cm.coolwarm)
+    
+    # Limit axis values
+    axes.set_xlim(xx.min(), xx.max())
+    axes.set_ylim(yy.min(), yy.max())
+    
+    # Show!
+    plt.show()
+    
+    # Figure saved
+    fig.savefig(fig_name, format='png', dpi=500)
+    
+    # Clear plot
+    plt.clf()
+
+    
+    
 
 if __name__ == '__main__':
     
@@ -395,7 +461,7 @@ if __name__ == '__main__':
 #    X, y = gen_data(15)
 #    save_dataset(X, y, './dataset/non-linear-data1.csv')
 
-#    X, y = read_data('./dataset/non-linear-data1.csv') 
+    X, y = read_data('./dataset/2d-linear-data.csv') 
 #    
 #    X_3d = transform_2d_to_3d(X)
 #    plot_3d_data(X_3d, y.astype('int'), '2d-3d-tansform')
@@ -405,5 +471,7 @@ if __name__ == '__main__':
     # lambda i :  i**6 + i**4 + i**2 + 2
     # lambda i :  i**2
     
-    plot_func('weak-convex-func', lambda i : i**2 + 2)
+    #plot_func('weak-convex-func', lambda i : i**2 + 2)
+    
+    SVM_kernel_plot(X, y, 'poly-SVM-poly-d1.png')
     
