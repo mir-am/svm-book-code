@@ -304,6 +304,41 @@ def gen_data(n_samples):
     y = np.row_stack((c1_label, c2_label)) 
     
     return X, y
+
+
+def gen_mc_data(n_samples, n_class):
+    """
+    Generates multi-class classification data.
+    """
+    
+    # Empty plot for manually generate data
+    plt.plot()
+    
+    # Set Axis limit
+    plt.ylim([-8, 8])
+    plt.xlim([-8, 8])
+    
+    X_train = []
+    y_train = []
+    
+    for c in range(n_class):
+        
+        c_i = np.array(plt.ginput(n=n_samples, timeout=0, mouse_stop=2))
+        
+        plt.scatter(c_i[:, 0], c_i[:, 1])
+        plt.show()
+        
+        X_train.append(c_i)
+        y_train = y_train + ([c] * n_samples)
+        
+    # Merege class sampes
+    X = X_train[0]
+    
+    for i in range(len(X_train) - 1):
+        
+        X = np.row_stack((X, X_train[i+1]))
+        
+    return X, np.asarray(y_train)
     
 
 def transform_2d_to_3d(X):
@@ -461,7 +496,7 @@ if __name__ == '__main__':
 #    X, y = gen_data(15)
 #    save_dataset(X, y, './dataset/non-linear-data1.csv')
 
-    X, y = read_data('./dataset/2d-linear-data.csv') 
+    #X, y = read_data('./dataset/2d-linear-data.csv') 
 #    
 #    X_3d = transform_2d_to_3d(X)
 #    plot_3d_data(X_3d, y.astype('int'), '2d-3d-tansform')
@@ -473,5 +508,8 @@ if __name__ == '__main__':
     
     #plot_func('weak-convex-func', lambda i : i**2 + 2)
     
-    SVM_kernel_plot(X, y, 'poly-SVM-poly-d1.png')
+    #SVM_kernel_plot(X, y, 'poly-SVM-poly-d1.png')
+    
+    X, y = gen_mc_data(7, 3)
+    save_dataset(X, y, './dataset/mc-data.csv')
     
