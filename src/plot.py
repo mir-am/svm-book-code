@@ -169,6 +169,44 @@ def plot_dataset(X, y, plot_name):
         fig.savefig(join('./figs/', plot_name + '.png'), format='png', dpi=500)
 
 
+def plot_mc_data(X, y, markers, colors, plot_name):
+    """
+    Plots a multi-class classification problem.
+    """
+    
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    
+    classes = np.unique(y)
+    
+    for i in range(classes.size):
+        
+        X_i = X[y == i]
+        
+        plt.scatter(X_i[:, 0], X_i[:, 1], marker=markers[i], color=colors[i],
+                    s=(50,))
+        
+    # range of x and y axis
+    x_range = ax.get_xlim()
+    y_range = ax.get_ylim()
+    
+    plt.ylabel(r'$x_{2}$')
+    plt.xlabel(r'$x_{1}$')
+    plt.xticks(np.arange(int(x_range[0]) + 1, int(x_range[1]) + 1, step=2))
+    plt.yticks(np.arange(int(y_range[0]) + 1, int(y_range[1]) + 1, step=2))
+    
+    plt.tight_layout() # To fix axis labels not shown completely in the fig
+    plt.show()
+    
+    print("Wanna save?... yes -> 1")
+    
+    choice = int(input())
+        
+    if choice:
+    
+        fig.savefig(join('./figs/', plot_name + '.png'), format='png', dpi=500)
+
+
 def plot_3d_data(X, y, fig_name):
     """
     It plots a 3d-dimensional dataset.
@@ -496,7 +534,7 @@ if __name__ == '__main__':
 #    X, y = gen_data(15)
 #    save_dataset(X, y, './dataset/non-linear-data1.csv')
 
-    #X, y = read_data('./dataset/2d-linear-data.csv') 
+    X, y = read_data('./dataset/mc-data-4c.csv') 
 #    
 #    X_3d = transform_2d_to_3d(X)
 #    plot_3d_data(X_3d, y.astype('int'), '2d-3d-tansform')
@@ -510,6 +548,8 @@ if __name__ == '__main__':
     
     #SVM_kernel_plot(X, y, 'poly-SVM-poly-d1.png')
     
-    X, y = gen_mc_data(7, 3)
-    save_dataset(X, y, './dataset/mc-data.csv')
+    # X, y = gen_mc_data(6, 4)
+    #save_dataset(X, y, './dataset/mc-data-4c.csv')
+    
+    plot_mc_data(X, y, ['^', 'o', 's', 'X'], ['b', 'r', 'k', 'g'], 'mc-data-4c')
     
