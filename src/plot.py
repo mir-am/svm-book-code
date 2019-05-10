@@ -237,7 +237,6 @@ def plot_3d_data(X, y, fig_name):
 
 
 def plot_quadratic(plot_name):
-    
     """
     It plots a quadratic function
     """
@@ -507,8 +506,69 @@ def SVM_kernel_plot(X, y, fig_name):
     # Clear plot
     plt.clf()
 
+
+def plot_error_func(X, y, plot_name):
+    """
+    Plots cost cost function for regression.
+    """
     
+    fig = plt.figure()
+    ax = fig.add_subplot(1, 1, 1)
     
+    #  move left y-axis to center
+    ax.spines['left'].set_position('center')
+    #ax.spines['bottom'].set_position('center')
+    
+    # Eliminate upper and right axes
+    ax.spines['right'].set_color('none')
+    ax.spines['top'].set_color('none')
+    
+    epsilon = 0.5
+    
+    func = {'sq': lambda x,y: (y-x)**2, 'pl': lambda x,y: 0 if abs(y-x) < epsilon else abs(y-x) - epsilon}
+    
+    r = [(y[i, :] - X[i])[0] for i in range(X.shape[0])]
+    e = [func['pl'](X[i], y[i, :])[0] for i in range(X.shape[0])]
+    
+    print(r)
+    print(e)
+    
+    # Creating smooth curve
+#    xnew = np.linspace(min(x), max(x), 300)
+#    spl = make_interp_spline(x, y, k=3)
+#    smooth_y = spl(xnew)
+    
+    plt.plot(r, e, color='black')
+    
+    # Plot constraint
+    #plt.axvline(2, color='k', linestyle='dashed')
+    
+    # plot min point
+    #plt.plot([0], [0], marker='o', color='k')
+    
+    # range of x and y axis
+    #x_range = ax.get_xlim()
+    #y_range = ax.get_ylim()
+
+    #plt.xticks(np.arange(int(x_range[0]), int(x_range[1]) + 1, step=1))
+    #plt.yticks(np.arange(int(y_range[0]) + 1, int(y_range[1]) + 1, step=1))
+    
+    # Turn off axis labels
+    ax.set_yticklabels([])
+    ax.set_xticklabels([])
+    
+    # Remove tick marks
+    ax.tick_params(bottom=False, left=False)
+    
+    # axis major lines
+    #ax.xaxis.grid(which='major', linestyle='--')
+    #ax.yaxis.grid(which='major', linestyle='--')
+    
+    # Set margin to zero to make y-axis connected to x-axis
+    plt.margins(0)
+    plt.show()
+
+    #fig.savefig(join('./figs/', plot_name + '.png'), format='png', dpi=500)
 
 if __name__ == '__main__':
     
@@ -534,7 +594,7 @@ if __name__ == '__main__':
 #    X, y = gen_data(15)
 #    save_dataset(X, y, './dataset/non-linear-data1.csv')
 
-    X, y = read_data('./dataset/mc-data-4c.csv') 
+    #X, y = read_data('./dataset/mc-data-4c.csv') 
 #    
 #    X_3d = transform_2d_to_3d(X)
 #    plot_3d_data(X_3d, y.astype('int'), '2d-3d-tansform')
@@ -551,5 +611,9 @@ if __name__ == '__main__':
     # X, y = gen_mc_data(6, 4)
     #save_dataset(X, y, './dataset/mc-data-4c.csv')
     
-    plot_mc_data(X, y, ['^', 'o', 's', 'X'], ['b', 'r', 'k', 'g'], 'mc-data-4c')
+    #plot_mc_data(X, y, ['^', 'o', 's', 'X'], ['b', 'r', 'k', 'g'], 'mc-data-4c')
+    
+    #y, X = read_data('./dataset/reg_data.csv')
+    
+    #plot_error_func(X, y, 'squared-func')
     
