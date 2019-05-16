@@ -592,6 +592,52 @@ def plot_error_func(X, y, plot_name):
 #    ax.set_ylim([-1, 2])
 #    
 #    plt.show()
+    
+def plot_e_zone(plot_name):
+    """
+    Plots e-insenstive zone
+    """
+    
+    fig = plt.figure()
+    ax = fig.add_subplot(1, 1, 1)
+    
+    # Eliminate upper and right axes
+    ax.spines['right'].set_color('none')
+    ax.spines['top'].set_color('none')
+    
+    in_space = lambda x, i: (x**3) - (9 * x) + i
+    f_space = lambda x, i: 2 * x + i
+    
+    x = np.arange(-5, 5)
+    y_1 = [in_space(i, -5) for i in x]
+    y_2 = [in_space(i, 5) for i in x]
+    y_3 = [in_space(i, 15) for i in x]
+    
+    for i in [(y_1, 'dashed'), (y_2, 'solid'), (y_3, 'dashed')]:
+    
+        # Creating smooth curve
+        xnew = np.linspace(min(x), max(x), 300)
+        spl = make_interp_spline(x, i[0], k=3)
+        smooth_y = spl(xnew)
+        
+        plt.plot(xnew, smooth_y, ls=i[1], color='black')
+    
+    ax.set_ylim([-30, 30])
+    # Turn off axis labels
+    ax.set_yticklabels([])
+    ax.set_xticklabels([])
+    
+    # Remove tick marks
+    ax.tick_params(bottom=False, left=False)
+    
+    plt.ylabel(r'$y$')
+    plt.xlabel(r'$x$')
+    
+    plt.tight_layout() # To fix axis labels not shown completely in the fig
+    plt.show()
+    
+    fig.savefig(join('./figs/', plot_name + '.png'), format='png', dpi=500)
+    
 
 if __name__ == '__main__':
     
@@ -636,7 +682,9 @@ if __name__ == '__main__':
     
     #plot_mc_data(X, y, ['^', 'o', 's', 'X'], ['b', 'r', 'k', 'g'], 'mc-data-4c')
     
-    y, X = read_data('./dataset/reg_data.csv')
+    #y, X = read_data('./dataset/reg_data.csv')
     
-    plot_error_func(X, y, 'squared-function')
+    #plot_error_func(X, y, 'squared-function')
+    
+    plot_e_zone('input_space')
     
