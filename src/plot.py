@@ -523,16 +523,19 @@ def plot_error_func(X, y, plot_name):
     ax.spines['right'].set_color('none')
     ax.spines['top'].set_color('none')
     
-    epsilon = 0.5
+    epsilon = 2.75
     
-    func = {'sq': lambda x,y: (y-x)**2, 'pl': lambda x,y: 0 if abs(y-x) < epsilon else abs(y-x) - epsilon}
+    func = {'sq': lambda x,y: (y-x)**2, 'pl': lambda r: 0 if abs(r) < epsilon else abs(r) - epsilon}
+    
+#    r = [(y[i, :] - X[i])[0] for i in range(X.shape[0])]
+#    r = r + [abs(x) for x in r]
+#    e = [func['pl'](i) for i in r]
+#    diff_e = [abs(y[i, :] - X[i]) for i in range(X.shape[0])]
     
     r = [(y[i, :] - X[i])[0] for i in range(X.shape[0])]
-    e = [func['pl'](X[i], y[i, :])[0] for i in range(X.shape[0])]
+    e = [func['sq'](X[i], y[i, :])[0] for i in range(X.shape[0])]
     
-    print(r)
-    print(e)
-    
+
     # Creating smooth curve
 #    xnew = np.linspace(min(x), max(x), 300)
 #    spl = make_interp_spline(x, y, k=3)
@@ -559,6 +562,7 @@ def plot_error_func(X, y, plot_name):
     
     # Remove tick marks
     ax.tick_params(bottom=False, left=False)
+    #ax.set_ylim([1.5, 5])
     
     # axis major lines
     #ax.xaxis.grid(which='major', linestyle='--')
@@ -568,7 +572,26 @@ def plot_error_func(X, y, plot_name):
     plt.margins(0)
     plt.show()
 
-    #fig.savefig(join('./figs/', plot_name + '.png'), format='png', dpi=500)
+    fig.savefig(join('./figs/', plot_name + '.png'), format='png', dpi=500)
+    
+#    def f(x):
+#        if(x == 2): return 0
+#        else : return 1
+#        
+#    x = np.arange(0.0, 5., 0.2)
+#    y = []
+#    
+#    for i in range(len(x)):
+#        y.append(f(x[i]))
+#        
+#    print(x)
+#    print(y)
+#    
+#    plt.plot(x, y, c='red', ls='', ms=5, marker='.')
+#    ax = plt.gca()
+#    ax.set_ylim([-1, 2])
+#    
+#    plt.show()
 
 if __name__ == '__main__':
     
@@ -613,7 +636,7 @@ if __name__ == '__main__':
     
     #plot_mc_data(X, y, ['^', 'o', 's', 'X'], ['b', 'r', 'k', 'g'], 'mc-data-4c')
     
-    #y, X = read_data('./dataset/reg_data.csv')
+    y, X = read_data('./dataset/reg_data.csv')
     
-    #plot_error_func(X, y, 'squared-func')
+    plot_error_func(X, y, 'squared-function')
     
