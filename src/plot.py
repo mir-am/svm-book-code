@@ -444,6 +444,36 @@ def plot_func(plot_name, func):
     fig.savefig(join('./figs/', plot_name + '.png'), format='png', dpi=500)
     
     
+def plot_box_const(plot_name):
+    """
+    Plots an empty plot for box constraint
+    """
+    
+    fig = plt.figure()
+    ax = fig.add_subplot(1, 1, 1)
+    
+
+    # Eliminate upper and right axes
+    ax.spines['right'].set_color('none')
+    ax.spines['top'].set_color('none')
+    
+    plt.xticks(np.arange(0, 6, step=1))
+    plt.yticks(np.arange(0, 6, step=1))
+    
+    plt.ylabel(r'$\alpha_{2}$')
+    plt.xlabel(r'$\alpha_{1}$')
+    
+    # axis major lines
+    ax.xaxis.grid(which='major', linestyle='--')
+    ax.yaxis.grid(which='major', linestyle='--')
+    
+    # Set margin to zero to make y-axis connected to x-axis
+    #plt.margins(0)
+    plt.tight_layout() # To fix axis labels not shown completely in the fig
+    plt.show()
+    
+    fig.savefig(join('./figs/', plot_name + '.png'), format='png', dpi=500)
+
 
 def make_mesh(x, y, h=0.002):
     """
@@ -686,5 +716,7 @@ if __name__ == '__main__':
     
     #plot_error_func(X, y, 'squared-function')
     
-    plot_e_zone('input_space')
+    #plot_e_zone('input_space')
+    
+    plot_box_const("SMO-constraints")
     
