@@ -86,7 +86,6 @@ def save_dataset(X, y, path):
       
 
 def make_data_VC(plot_name):
-    
     """
     It makes a 2-d dataset with 3 samples for showing VC dimension of the
     Perceptron.
@@ -127,7 +126,6 @@ def make_data_VC(plot_name):
     fig.savefig(join('./figs/', plot_name + '.png'), format='png', dpi=500)
     
 def plot_dataset(X, y, plot_name):
-    
     """
     This plot data points in the feature space
     
@@ -139,6 +137,8 @@ def plot_dataset(X, y, plot_name):
     
     fig = plt.figure()
     ax = fig.add_subplot(111)
+    
+    y = y.reshape(y.shape[0])
     
     # Split training points into separate classes
     X_c1 = X[y == 1]
@@ -298,7 +298,7 @@ def read_data(filename):
     return X, y
     
     
-def gen_data(n_samples):
+def gen_data(n_samples_c1, n_samples_c2):
     """
     Generating artificial dataset manually.
     """
@@ -307,11 +307,11 @@ def gen_data(n_samples):
     plt.plot()
     
     # Set Axis limit
-    plt.ylim([-8, 8])
-    plt.xlim([-8, 8])
+    plt.ylim([-5, 5])
+    plt.xlim([-5, 5])
     
     # Ginput for generating class 1 data
-    c1_in = plt.ginput(n=n_samples, timeout=0, mouse_stop=2)
+    c1_in = plt.ginput(n=n_samples_c1, timeout=0, mouse_stop=2)
     
     # Convert to numpy array
     c1_data = np.asarray(c1_in)
@@ -319,7 +319,7 @@ def gen_data(n_samples):
     plt.scatter(c1_data[:, 0], c1_data[:, 1])
     plt.show()
     
-    c2_in = plt.ginput(n=n_samples, timeout=0, mouse_stop=2)
+    c2_in = plt.ginput(n=n_samples_c2, timeout=0, mouse_stop=2)
     
     c2_data = np.asarray(c2_in)
     
@@ -671,8 +671,7 @@ def plot_e_zone(plot_name):
 
 if __name__ == '__main__':
     
-     
-    
+
 #    # Cov matrices
 #    c1_cov = np.array([[0, 0.2], [0.2, 0]])
 #    c2_cov = np.array([[0, 0.2], [0.2, 0]])
@@ -690,7 +689,8 @@ if __name__ == '__main__':
 #        
 #        save_dataset(X, y, './2d-linear-data.csv')
     
-#    X, y = gen_data(15)
+    X, y = gen_data(10, 4)
+    plot_dataset(X, y, 'one-class')
 #    save_dataset(X, y, './dataset/non-linear-data1.csv')
 
     #X, y = read_data('./dataset/mc-data-4c.csv') 
@@ -718,5 +718,5 @@ if __name__ == '__main__':
     
     #plot_e_zone('input_space')
     
-    plot_box_const("SMO-constraints")
+    #plot_box_const("SMO-constraints")
     
